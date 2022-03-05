@@ -24,6 +24,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import com.example.android.aboutme.databinding.ActivityMainBinding
 
 
 /**
@@ -39,15 +41,19 @@ import androidx.appcompat.app.AppCompatActivity
 class MainActivity : AppCompatActivity() {
 
     // TODO (03) Create a binding object in the MainActivity.
+    private lateinit var binding: ActivityMainBinding
 
     // TODO (09) Create an instance of MyName and set binding.myName to it.
+    private val myName: MyName = MyName("Roman Boyarkin")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // TODO (04) Use DataBindingUtil to set the layout for MainActivity.
-        setContentView(R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+
+        binding.myName = myName
         // TODO (05) Use the binding object to replace all calls to findViewById.
-        findViewById<Button>(R.id.done_button).setOnClickListener {
+        binding.doneButton.setOnClickListener {
             addNickname(it)
         }
     }
@@ -59,13 +65,10 @@ class MainActivity : AppCompatActivity() {
      */
     private fun addNickname(view: View) {
         // TODO (10) set the nickname in the binding object and invalidateAll().
-        val editText = findViewById<EditText>(R.id.nickname_edit)
-        val nicknameTextView = findViewById<TextView>(R.id.nickname_text)
-
-        nicknameTextView.text = editText.text
-        editText.visibility = View.GONE
-        view.visibility = View.GONE
-        nicknameTextView.visibility = View.VISIBLE
+        binding.apply {
+            myName?.nickname = nicknameEdit.text.toString()
+            invalidateAll()
+        }
 
         // Hide the keyboard.
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
